@@ -37,6 +37,11 @@
             Requests
             <span id="request-notification" class="badge bg-danger" style="display: none;"></span>
         </a>
+        <a href="{{ route('admin.approved_shops') }}">Approved Shops</a>
+
+
+
+
 
         <a href="{{ route('admin.profile') }}">Profile</a>
         <form action="{{ route('logout') }}" method="POST" class="mt-3 text-center">

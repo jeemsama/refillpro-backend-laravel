@@ -27,6 +27,17 @@ Route::middleware(['auth', 'admin'])->group(function () {
         return response()->json(['count' => $count]);
     })->name('admin.pendingRequestCount');
 
+    Route::post('/admin/owners/{id}/pause', [AdminController::class, 'pauseOwner'])->name('admin.owners.pause');
+    Route::post('/admin/owners/{id}/continue', [AdminController::class, 'continueOwner'])->name('admin.owners.continue');
+
+    Route::get('admin/approved-shops', [AdminController::class, 'showApprovedOwners'])->name('admin.approved_shops');
+
+
+
+
+    
+
+
 
 
     
