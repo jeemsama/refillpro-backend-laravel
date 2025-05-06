@@ -44,4 +44,10 @@ class RefillingStationOwner extends Model
         'password',
     ];
     
+    public function riders()
+    {
+        return $this->hasMany(Rider::class, 'owner_id');
+    }
+
 }
+
