@@ -6,11 +6,20 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\RefillingStationOwner;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class RefillingStationOwnerController extends Controller
 {
         public function store(Request $request)
     {
+        // Log that registration data was received
+        Log::info('Refilling station owner registration data received', [
+            'ip' => $request->ip(),
+            'email' => $request->input('email'),
+            'shop_name' => $request->input('shop_name'),
+            'timestamp' => now()->toDateTimeString()
+        ]);
+        
         $validated = $request->validate([
             'name' => 'required',
             'phone' => 'required',
@@ -27,8 +36,6 @@ class RefillingStationOwnerController extends Controller
             'regular_gallon_price' => 'nullable|numeric',
             'has_dispenser_gallon' => 'boolean',
             'dispenser_gallon_price' => 'nullable|numeric',
-            'has_small_gallon' => 'boolean',
-            'small_gallon_price' => 'nullable|numeric',
             'delivery_time_slots' => 'array',
             'agreed_to_terms' => 'boolean|required|in:1',
         ]);
@@ -58,7 +65,16 @@ class RefillingStationOwnerController extends Controller
             $validated['status'] = 'pending';
 
             // Create the shop owner
-            RefillingStationOwner::create($validated);
+            $owner = RefillingStationOwner::create($validated);
+
+            // Log successful registration
+            Log::info('Refilling station owner registration successful', [
+                'owner_id' => $owner->id,
+                'email' => $owner->email,
+                'shop_name' => $owner->shop_name,
+                'status' => $owner->status,
+                'timestamp' => now()->toDateTimeString()
+            ]);
 
             return response()->json(['message' => 'Registration submitted for approval.'], 201);
     }
@@ -86,10 +102,6 @@ class RefillingStationOwnerController extends Controller
                     'dispenser' => $station->has_dispenser_gallon ? [
                         'available' => true,
                         'price' => $station->dispenser_gallon_price,
-                    ] : null,
-                    'small' => $station->has_small_gallon ? [
-                        'available' => true,
-                        'price' => $station->small_gallon_price,
                     ] : null,
                 ],
                 'delivery_time_slots' => $station->delivery_time_slots,

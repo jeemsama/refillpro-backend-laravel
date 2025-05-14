@@ -59,10 +59,13 @@ return [
             'engine' => null,
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+                // Add these lines to support caching_sha2_password authentication
+                PDO::ATTR_EMULATE_PREPARES => true,
+                PDO::MYSQL_ATTR_FOUND_ROWS => true,
             ]) : [],
         ],
 
-        'mariadb' => [
+        'mariadb' => [  
             'driver' => 'mariadb',
             'url' => env('DB_URL'),
             'host' => env('DB_HOST', '127.0.0.1'),

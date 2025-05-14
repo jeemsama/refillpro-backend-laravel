@@ -15,8 +15,7 @@ class AuthController extends Controller
         $request->validate([
             'email' => 'required|email',
             'password' => 'required'
-        ]);
-    
+        ]); 
         // Check if email belongs to owner
         $owner = RefillingStationOwner::where('email', $request->email)->first();
         if ($owner && Hash::check($request->password, $owner->password)) {
@@ -32,7 +31,7 @@ class AuthController extends Controller
                 'token' => $token,
             ], 200);
         }
-    
+       
         // Check if email belongs to rider
         $rider = Rider::where('email', $request->email)->first();
         if ($rider && Hash::check($request->password, $rider->password)) {
