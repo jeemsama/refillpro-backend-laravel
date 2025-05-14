@@ -43,3 +43,16 @@ Route::middleware('auth:sanctum')->group(function () {
 // Commented routes
 // Route::get('/riders', [RiderController::class, 'index']);
 // Route::post('/riders', [RiderController::class,'store']);
+});
+
+
+// Customer email/OTP auth
+Route::post('/customer/send-otp',   [App\Http\Controllers\Auth\CustomerAuthController::class,'sendOtp']);
+Route::post('/customer/verify-otp', [App\Http\Controllers\Auth\CustomerAuthController::class,'verifyOtp']);
+
+// Protected customer profile
+Route::middleware('auth:sanctum')->group(function(){
+    Route::get('/customer/profile',  [App\Http\Controllers\CustomerProfileController::class,'show']);
+    Route::put('/customer/profile',  [App\Http\Controllers\CustomerProfileController::class,'update']);
+    Route::post('/customer/logout',  [App\Http\Controllers\CustomerProfileController::class,'logout']);
+});
