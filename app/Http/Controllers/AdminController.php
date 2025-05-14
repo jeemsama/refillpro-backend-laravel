@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use App\Models\RefillingStationOwner;
+use App\Models\Rider;
 
 
 class AdminController extends Controller
@@ -14,8 +15,9 @@ class AdminController extends Controller
     {
         $totalOwners = RefillingStationOwner::count();
         $pendingOwners = RefillingStationOwner::where('status', 'pending')->count();
+        $totalRiders = Rider::count(); 
 
-        return view('admin.dashboard', compact('totalOwners', 'pendingOwners'));
+        return view('admin.dashboard', compact('totalOwners', 'pendingOwners', 'totalRiders'));
     }
 
     public function showRequests()

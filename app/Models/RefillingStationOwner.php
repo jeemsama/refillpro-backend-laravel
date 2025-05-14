@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;  
+use Laravel\Sanctum\HasApiTokens;                       
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class RefillingStationOwner extends Model
+class RefillingStationOwner extends Authenticatable
 {
-    use HasFactory;
+    use HasApiTokens, Notifiable, HasFactory;
     protected $fillable = [
         'name',
         'phone',

@@ -23,25 +23,37 @@ class AuthController extends Controller
             if ($owner->status !== 'approved') {
                 return response()->json(['message' => 'Account not approved'], 403);
             }
-    
+
+            $token = $owner->createToken('owner-device')->plainTextToken;
+            
             return response()->json([
                 'user' => $owner,
                 'role' => 'owner',
-                'token' => 'mock-token-owner'
-            ]);
+                'token' => $token,
+            ], 200);
         }
     
         // Check if email belongs to rider
         $rider = Rider::where('email', $request->email)->first();
         if ($rider && Hash::check($request->password, $rider->password)) {
+            
+            $token = $rider->createToken('rider-device')->plainTextToken;
+
             return response()->json([
                 'user' => $rider,
                 'role' => 'rider',
-                'token' => 'mock-token-rider'
-            ]);
+                'token' => '$token'
+            ], 200);
         }
     
         return response()->json(['message' => 'Invalid credentials'], 401);
+
+        
     }
+
+    
+
+
+    
     
 }

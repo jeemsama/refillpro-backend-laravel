@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('phone')->nullable();
             $table->string('password');
-            $table->enum('role', ['owner', 'rider'])->default('owner');
+            $table->enum('role', ['rider'])->default('rider');
 
             $table->timestamps();
     

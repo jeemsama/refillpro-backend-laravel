@@ -22,5 +22,14 @@
                 </div>
             </div>
         </div>
+        <div class="col-md-4 mt-3 mt-md-0">
+            <div class="card bg-success text-white">
+                <div class="card-body">
+                    <h5>Total Riders</h5>
+                    <h2>{{ $totalRiders }}</h2>
+                </div>
+            </div>
+        </div>
+
     </div>
 @endsection

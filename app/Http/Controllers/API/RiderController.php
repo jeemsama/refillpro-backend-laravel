@@ -1,20 +1,29 @@
 <?php
 
+
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Rider;
+use App\Models\Rider;      // ← correct model namespace
 use Illuminate\Support\Facades\Hash;
+
 
 class RiderController extends Controller
 {
     public function index(Request $request)
     {
+        // \Log::info('BearerToken: '.$request->bearerToken());
         $owner = $request->user();
-        $riders = Rider::where('owner_id', $owner->id)->get();
+        $riders = Rider::where('owner_id', $owner->id)->get(['id','name','phone']);
+        // $bearer = $request->bearerToken();  
+        // $all    = $request->headers->all();
 
-        return response()->json($riders);
+        return response()->json(
+            $riders,
+            // 'you_sent_bearer' => $bearer,
+            // 'all_headers'     => $all,
+        200);
     }
 
     public function store(Request $request)
