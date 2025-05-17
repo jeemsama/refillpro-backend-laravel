@@ -43,8 +43,6 @@ Route::middleware('auth:sanctum')->group(function () {
 // Commented routes
 // Route::get('/riders', [RiderController::class, 'index']);
 // Route::post('/riders', [RiderController::class,'store']);
-});
-
 
 // Customer email/OTP auth
 Route::post('/customer/send-otp',   [App\Http\Controllers\Auth\CustomerAuthController::class,'sendOtp']);

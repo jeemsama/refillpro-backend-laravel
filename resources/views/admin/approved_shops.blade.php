@@ -24,7 +24,7 @@
                         <th>DTI</th>
                         <th>Permit</th>
                         <th>Approved</th>
-                        <th>Actions</th>
+                        <!-- <th>Actions</th> -->
                     </tr>
                 </thead>
                 <tbody>
@@ -55,7 +55,7 @@
                                      onclick="document.getElementById('permitModalImg').src=this.src;">
                             </td>
                             <td>{{ $owner->updated_at->format('M d, Y g:i A') }}</td>
-                            <td>
+                            <!-- <td>
                                 @if($owner->is_visible)
                                     <form action="{{ route('admin.owners.pause', $owner->id) }}" method="POST" style="display:inline;">
                                         @csrf
@@ -67,7 +67,7 @@
                                         <button type="submit" class="btn btn-success btn-sm">Continue</button>
                                     </form>
                                 @endif
-                            </td>
+                            </td> -->
                         </tr>
                     @endforeach
                 </tbody>
