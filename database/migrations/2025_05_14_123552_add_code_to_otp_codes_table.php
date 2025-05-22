@@ -12,8 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('otp_codes', function (Blueprint $table) {
-            $table->string('code'); // Add this line
-        });
+    if (!Schema::hasColumn('otp_codes', 'code')) {
+        $table->string('code')->nullable(false);
+    }
+});
+
     }
 
     /**

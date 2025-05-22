@@ -11,14 +11,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('customers', function(Blueprint $table){
-            $table->id();
-            $table->string('email')->unique();
+        Schema::table('customers', function (Blueprint $table) {
             $table->string('name')->nullable();
             $table->string('phone')->nullable();
-            $table->text('address')->nullable();
-            $table->timestamps();
+            $table->string('address')->nullable();
+            $table->string('profile_picture')->nullable();
         });
+
     }
 
     /**
