@@ -10,22 +10,20 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-{
-    Schema::table('otp_codes', function (Blueprint $table) {
-        if (!Schema::hasColumn('otp_codes', 'expires_at')) {
-            $table->timestamp('expires_at')->nullable(); // Only add if it doesn't exist
-        }
-    });
-}
-
+    {
+        Schema::table('orders', function (Blueprint $table) {
+            $table->string('ordered_by')->after('customer_id');
+            $table->string('phone')->after('ordered_by');
+        });
+    }
 
     /**
      * Reverse the migrations.
      */
     public function down(): void
     {
-        Schema::table('otp_codes', function (Blueprint $table) {
-            //
+        Schema::table('orders', function (Blueprint $table) {
+            $table->dropColumn(['ordered_by', 'phone']);
         });
     }
 };

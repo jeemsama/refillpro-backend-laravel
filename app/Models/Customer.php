@@ -13,14 +13,14 @@ class Customer extends Model
 
     protected $fillable = ['name', 'phone', 'address', 'profile_image'];
     protected $hidden   = [];  // no password here
+
+    protected $appends = ['profile_image_url'];
+
+    public function getProfileImageUrlAttribute()
+    {
+        return $this->profile_image
+            ? asset('storage/' . $this->profile_image)
+            : null;
+    }
+
 }
-
-protected $appends = ['profile_image_url'];
-
-public function getProfileImageUrlAttribute()
-{
-    return $this->profile_image
-        ? asset('storage/' . $this->profile_image)
-        : null;
-}
-

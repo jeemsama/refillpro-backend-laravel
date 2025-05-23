@@ -86,6 +86,7 @@ class RefillingStationOwnerController extends Controller
         $stations = RefillingStationOwner::where('status', 'approved')->get()->map(function ($station) {
             return [
                 'id' => $station->id,
+                'owner_id' => $station->id, // <= i add this line
                 'shop_name' => $station->shop_name,
                 'owner_name' => $station->name,
                 'email' => $station->email,
