@@ -9,13 +9,15 @@ class CustomerProfileController extends Controller
 {
     public function show(Request $req)
     {
-        $user = $req->user();
+        $customer = $req->user();
 
         return response()->json([
-            'name' => $user->name,
-            'phone' => $user->phone,
-            'address' => $user->address,
-            'profile_image_url' => $user->profile_image ? asset('storage/' . $user->profile_image) : null,
+            'name' => $customer->name,
+            'phone' => $customer->phone,
+            'address' => $customer->address,
+            'profile_image_url' => $customer->profile_image
+                ? asset('storage/' . $customer->profile_image)
+                : null,
         ]);
     }
 
@@ -28,7 +30,7 @@ class CustomerProfileController extends Controller
             'profile_image' => 'nullable|image|max:2048',
         ]);
 
-        $user = $req->user();
+        $customer = $req->user();
 
         if ($req->hasFile('profile_image')) {
             Log::info('✅ profile_image field is present');
@@ -36,10 +38,10 @@ class CustomerProfileController extends Controller
             $file = $req->file('profile_image');
 
             if ($file->isValid()) {
-                $path = $file->store('profile_images', 'public');
+                $path = $file->store('profile_image', 'public');
                 \Log::info('✅ File saved at: ' . $path);
 
-                $user->profile_image = $path;
+                $customer->profile_image = $path;
             } else {
                 \Log::error('❌ Uploaded file is not valid.');
             }
@@ -47,21 +49,21 @@ class CustomerProfileController extends Controller
             \Log::warning('⚠️ No file uploaded in profile_image');
         }
 
-        $user->name = $data['name'] ?? $user->name;
-        $user->phone = $data['phone'] ?? $user->phone;
+        $customer->name = $data['name'] ?? $customer->name;
+        $customer->phone = $data['phone'] ?? $customer->phone;
         
-        $user->save(); // ✅ explicitly save
+        $customer->save(); // ✅ explicitly save
 
         // Add full image URL
-        $user->profile_image_url = $user->profile_image
-            ? asset('storage/' . $user->profile_image)
+        $customer->profile_image_url = $customer->profile_image
+            ? asset('storage/' . $customer->profile_image)
             : null;
 
         return response()->json([
-            'name' => $user->name,
-            'phone' => $user->phone,
-            'address' => $user->address,
-            'profile_image_url' => $user->profile_image ? asset('storage/' . $user->profile_image) : null,
+            'name' => $customer->name,
+            'phone' => $customer->phone,
+            'address' => $customer->address,
+            'profile_image_url' => $customer->profile_image ? asset('storage/' . $customer->profile_image) : null,
         ]);
     }
 
