@@ -81,11 +81,19 @@ class RefillingStationOwnerController extends Controller
 
 
 
-    public function approvedStations()
+    public function approvedStations(Request $request)
     {
+                // start with only approved
+        $query = RefillingStationOwner::where('status', 'approved');
+
+        // if they passed owner_id, narrow it to exactly that record
+        if ($request->has('owner_id')) {
+            $query->where('id', $request->query('owner_id'));
+        }
         $stations = RefillingStationOwner::where('status', 'approved')->get()->map(function ($station) {
             return [
                 'id' => $station->id,
+                'owner_id' => $station->id, // <= i add this line
                 'shop_name' => $station->shop_name,
                 'owner_name' => $station->name,
                 'email' => $station->email,

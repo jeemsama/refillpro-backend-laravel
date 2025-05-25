@@ -11,9 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-    Schema::table('otp_codes', function (Blueprint $table) {
-        $table->string('email')->nullable();  // Add this line
-    });
+        Schema::table('orders', function (Blueprint $table) {
+            $table->string('ordered_by')->after('customer_id');
+            $table->string('phone')->after('ordered_by');
+        });
     }
 
     /**
@@ -21,8 +22,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('otp_codes', function (Blueprint $table) {
-            //
+        Schema::table('orders', function (Blueprint $table) {
+            $table->dropColumn(['ordered_by', 'phone']);
         });
     }
 };

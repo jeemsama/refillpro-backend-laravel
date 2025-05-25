@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('otp_codes', function (Blueprint $table) {
-            $table->string('code'); // Add this line
+        Schema::table('customers', function (Blueprint $table) {
+            $table->string('profile_image')->nullable();
         });
     }
 
@@ -21,8 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('otp_codes', function (Blueprint $table) {
-            //
+        Schema::table('customers', function (Blueprint $table) {
+            $table->dropColumn('profile_image');
         });
     }
 };
