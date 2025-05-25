@@ -64,6 +64,10 @@ return [
             'driver' => 'eloquent',
             'model' => env('AUTH_MODEL', App\Models\User::class),
         ],
+        'owners' => [
+        'driver' => 'eloquent',
+        'model'  => App\Models\RefillingStationOwner::class,
+        ],
 
         // 'users' => [
         //     'driver' => 'database',
@@ -97,6 +101,12 @@ return [
             'expire' => 60,
             'throttle' => 60,
         ],
+        'owners' => [
+        'provider' => 'owners',
+        'table'    => 'password_resets',
+        'expire'   => 60,
+        'throttle' => 60,
+    ],
     ],
 
     /*

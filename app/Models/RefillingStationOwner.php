@@ -6,6 +6,10 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Sanctum\HasApiTokens;                       
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Auth\Notifications\ResetPassword as ResetNotification;
+use Illuminate\Notifications\Messages\MailMessage;
+
+
 
 class RefillingStationOwner extends Authenticatable
 {
@@ -50,6 +54,25 @@ class RefillingStationOwner extends Authenticatable
     {
         return $this->hasMany(Rider::class, 'owner_id');
     }
+
+    public function sendPasswordResetNotification($token)
+{
+    $url = url("owner/password/reset", $token)
+         . '?email=' . urlencode($this->email);
+
+    $this->notify(new class($url) extends ResetNotification {
+        private $url;
+        public function __construct($url) { $this->url = $url; }
+        public function toMail($notifiable)
+        {
+            return (new MailMessage)
+                ->subject('RefillPro Owner Password Reset')
+                ->line('Click below to reset your password:')
+                ->action('Reset Password', $this->url)
+                ->line('If you did not request this, no action is needed.');
+        }
+    });
+}
 
 }
 

@@ -5,6 +5,9 @@ use App\Http\Controllers\RefillingStationOwnerController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ShopDetailsController;
 use App\Http\Controllers\API\RiderController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\OwnerProfileController;
 
 Route::prefix('v1')->group(function () {
     Route::post('/register-owner', [RefillingStationOwnerController::class, 'store']);
@@ -54,3 +57,13 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::put('/customer/profile',  [App\Http\Controllers\CustomerProfileController::class,'update']);
     Route::post('/customer/logout',  [App\Http\Controllers\CustomerProfileController::class,'logout']);
 });
+
+Route::post('password/forgot', [ForgotPasswordController::class, 'sendResetLinkEmail']);
+Route::post('password/reset',  [ResetPasswordController::class, 'reset']);
+
+//Profile Edit
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/owner/profile',   [OwnerProfileController::class, 'show']);
+    Route::patch('/owner/profile', [OwnerProfileController::class, 'update']);
+});
+
