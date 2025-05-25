@@ -54,21 +54,40 @@ class CustomerAuthController extends Controller
             return response()->json(['message' => 'Invalid or expired code'], 401);
         }
 
-        // Create or fetch the customer
-        $customer = Customer::firstOrCreate(
-            ['email' => $req->email]
-        );
+        \Log::info('OTP verified for: ' . $req->email);
 
-        // Issue a new Sanctum token
-        $token = $customer
-            ->createToken('customer-app')
-            ->plainTextToken;
+        $customer = Customer::where('email', $req->email)->first();
 
-        // Remove all OTPs for this email
+        if (!$customer) {
+            $customer = Customer::create([
+                'email' => $req->email,
+                'name' => '',
+                'phone' => '',
+                'address' => '',
+                'profile_image' => null,
+            ]);
+        }
+
+        // Reload fresh copy
+        $customer->refresh();
+
+        \Log::info('Customer instance: ', $customer->toArray());
+        \Log::info('Customer ID: ' . $customer->id);
+
+        $token = $customer->createToken('customer-app')->plainTextToken;
+
         OtpCode::where('email', $req->email)->delete();
 
         return response()->json([
-            'user'  => $customer,
+            'user' => [
+                'id' => $customer->id,
+                'email' => $customer->email,
+                'name' => $customer->name,
+                'phone' => $customer->phone,
+                'profile_image_url' => $customer->profile_image 
+                    ? asset('storage/' . $customer->profile_image) 
+                    : null,
+            ],
             'token' => $token,
         ], 200);
     }
