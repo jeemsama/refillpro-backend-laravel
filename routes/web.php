@@ -29,6 +29,10 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/approve/{id}', [AdminController::class, 'approve'])->name('admin.approve');
     Route::post('/admin/decline-owner', [AdminController::class, 'declineOwner'])->name('admin.decline-owner');
 
+    // ← Add your new Approve POST here
+    Route::post('/admin/approve-owner', [AdminController::class, 'approveOwner'])
+         ->name('admin.approve-owner');
+
 
     // routes/web.php
     Route::get('/admin/pending-request-count', function () {

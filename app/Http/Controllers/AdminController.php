@@ -2,20 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use App\Models\RefillingStationOwner;
 use App\Models\Rider;
-
+use App\Models\RefillingStation;  // <-- if you want to actually create the shop record
 
 class AdminController extends Controller
 {
     public function dashboard()
     {
-        $totalOwners = RefillingStationOwner::count();
+        $totalOwners   = RefillingStationOwner::count();
         $pendingOwners = RefillingStationOwner::where('status', 'pending')->count();
-        $totalRiders = Rider::count(); 
+        $totalRiders   = Rider::count();
 
         return view('admin.dashboard', compact('totalOwners', 'pendingOwners', 'totalRiders'));
     }
@@ -31,53 +30,81 @@ class AdminController extends Controller
         return view('admin.profile');
     }
 
+    /**
+     * (Optional) GET-driven preview of approval.
+     * You can remove this if you only ever approve via modal+POST.
+     */
     public function approve($id)
     {
         $owner = RefillingStationOwner::findOrFail($id);
+        return view('admin.approve_preview', compact('owner'));
+    }
+
+    /**
+     * Handles the POST from your “Yes, Approve” modal.
+     */
+    public function approveOwner(Request $request)
+    {
+        $request->validate([
+            'owner_id' => 'required|exists:refilling_station_owners,id',
+        ]);
+
+        $owner = RefillingStationOwner::findOrFail($request->owner_id);
+
+        // mark approved
         $owner->status = 'approved';
+        // $owner->approved_at = now();
         $owner->save();
-    
-        // Send email to owner
-        Mail::to($owner->email)->send(new \App\Mail\StationApprovedMail($owner));
-    
-        // return redirect()->route('admin.requests')->with('success', 'Owner approved and notified by email.');
-        return redirect()->route('admin.approved_shops')->with('success', 'Owner approved and moved to Approved Shops.');
+
+        // (Optional) actually create the shop record
+        // RefillingStation::create([
+        //     'owner_id'  => $owner->id,
+        //     'shop_name' => $owner->shop_name,
+        //     'address'   => $owner->address,
+        //     // …any other defaults…
+        // ]);
+
+        // notify owner
+        Mail::to($owner->email)
+            ->send(new \App\Mail\StationApprovedMail($owner));
+
+        return redirect()
+               ->route('admin.approved_shops')
+               ->with('success', 'Owner approved and shop created.');
     }
 
     public function declineOwner(Request $request)
     {
         $request->validate([
-            'owner_id' => 'required|exists:refilling_station_owners,id',
+            'owner_id'       => 'required|exists:refilling_station_owners,id',
             'decline_reason' => 'required|string',
         ]);
-    
-        $owner = RefillingStationOwner::findOrFail($request->owner_id);
-    
-        // Store data temporarily for email before delete
-        $ownerEmail = $owner->email;
-        $declineReason = $request->decline_reason;
-    
-        // Send email before delete
-        Mail::to($ownerEmail)->send(new \App\Mail\DeclineOwnerMail((object)[
-            'name' => $owner->name,
-            'email' => $ownerEmail,
-            'reason' => $declineReason,
-        ]));
-    
-        // Then delete from database
+
+        $owner        = RefillingStationOwner::findOrFail($request->owner_id);
+        $ownerEmail   = $owner->email;
+        $declineReason= $request->decline_reason;
+
+        Mail::to($ownerEmail)
+            ->send(new \App\Mail\DeclineOwnerMail((object)[
+                'name'   => $owner->name,
+                'email'  => $ownerEmail,
+                'reason' => $declineReason,
+            ]));
+
         $owner->delete();
-    
-        return redirect()->back()->with('status', 'Owner declined and data deleted successfully.');
+
+        return redirect()
+               ->back()
+               ->with('status', 'Owner declined and data deleted successfully.');
     }
 
-    
     public function pauseOwner($id)
     {
         $owner = RefillingStationOwner::findOrFail($id);
         $owner->is_visible = false;
         $owner->save();
 
-        return back()->with('success', 'Station has been paused (hidden from customers).');
+        return back()->with('success', 'Station has been paused.');
     }
 
     public function continueOwner($id)
@@ -86,14 +113,12 @@ class AdminController extends Controller
         $owner->is_visible = true;
         $owner->save();
 
-        return back()->with('success', 'Station is now visible to customers again.');
+        return back()->with('success', 'Station is now visible.');
     }
-    
+
     public function showApprovedOwners()
     {
         $approvedOwners = RefillingStationOwner::where('status', 'approved')->get();
         return view('admin.approved_shops', compact('approvedOwners'));
-
     }
-
 }
