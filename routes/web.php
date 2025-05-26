@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\Auth\OwnerForgotPasswordController;
+use App\Http\Controllers\Auth\OwnerResetPasswordController;
 
 
 Route::get('/', function () {
@@ -38,15 +40,18 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/admin/owners/{id}/continue', [AdminController::class, 'continueOwner'])->name('admin.owners.continue');
 
     Route::get('admin/approved-shops', [AdminController::class, 'showApprovedOwners'])->name('admin.approved_shops');
+// <<<<<<< haha
+// =======
 
-    Route::post('/test-upload', function (Illuminate\Http\Request $request) {
-        if ($request->hasFile('image')) {
-            $path = $request->file('image')->store('profile_images', 'public');
-            return response()->json(['stored_at' => $path]);
-        }
-        return response()->json(['error' => 'No image found']);
-    });
+//     Route::post('/test-upload', function (Illuminate\Http\Request $request) {
+//         if ($request->hasFile('image')) {
+//             $path = $request->file('image')->store('profile_images', 'public');
+//             return response()->json(['stored_at' => $path]);
+//         }
+//         return response()->json(['error' => 'No image found']);
+//     });
     
+// >>>>>>> main
 });
 
 
@@ -55,5 +60,13 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+Route::prefix('owner')->group(function() {
+    Route::get('password/reset',   [OwnerForgotPasswordController::class, 'showLinkRequestForm']);
+    Route::post('password/email',  [OwnerForgotPasswordController::class, 'sendResetLinkEmail']);
+    Route::get('password/reset/{token}', [OwnerResetPasswordController::class, 'showResetForm']);
+Route::post('password/reset', [OwnerResetPasswordController::class, 'reset'])
+         ->name('owner.password.update');});
+
 
 require __DIR__.'/auth.php';

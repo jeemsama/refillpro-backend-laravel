@@ -6,6 +6,12 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ShopDetailsController;
 use App\Http\Controllers\API\RiderController;
 use App\Http\Controllers\Api\OrderController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Auth\ResetPasswordController;
+use App\Http\Controllers\OwnerProfileController;
+// use App\Http\Controllers\API\RiderProfileController;
+
+
 
 Route::prefix('v1')->group(function () {
     Route::post('/register-owner', [RefillingStationOwnerController::class, 'store']);
@@ -67,6 +73,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/owner/shop-details', [ShopDetailsController::class, 'getCurrentOwnerShopDetails']);
     Route::post('/owner/shop-details', [ShopDetailsController::class, 'updateCurrentOwnerShopDetails']);
     Route::put('/owner/shop-details', [ShopDetailsController::class, 'updateCurrentOwnerShopDetails']);
+
+    // rider’s own profile
+    Route::get('/rider/profile', [RiderController::class,'show']);
 });
 
 
@@ -81,6 +90,21 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::put('/customer/profile',  [App\Http\Controllers\CustomerProfileController::class,'update']);
     Route::post('/customer/logout',  [App\Http\Controllers\CustomerProfileController::class,'logout']);
 });
+
+Route::post('password/forgot', [ForgotPasswordController::class, 'sendResetLinkEmail']);
+Route::post('password/reset',  [ResetPasswordController::class, 'reset']);
+
+//Profile Edit
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/owner/profile',   [OwnerProfileController::class, 'show']);
+    Route::patch('/owner/profile', [OwnerProfileController::class, 'update']);
+});
+
+//Riders Profile
+// Route::middleware('auth:sanctum')->get(
+//     '/rider/profile',
+//     [RiderProfileController::class, 'show']
+// );
 
 Route::get('/test-v1', function () {
     return response()->json(['ok' => true]);
