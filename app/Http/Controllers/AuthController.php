@@ -41,7 +41,7 @@ class AuthController extends Controller
             return response()->json([
                 'user' => $rider,
                 'role' => 'rider',
-                'token' => '$token'
+                'token' => $token
             ], 200);
         }
     

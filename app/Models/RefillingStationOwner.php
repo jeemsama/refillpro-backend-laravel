@@ -10,7 +10,6 @@ use Illuminate\Auth\Notifications\ResetPassword as ResetNotification;
 use Illuminate\Notifications\Messages\MailMessage;
 
 
-
 class RefillingStationOwner extends Authenticatable
 {
     use HasApiTokens, Notifiable, HasFactory;

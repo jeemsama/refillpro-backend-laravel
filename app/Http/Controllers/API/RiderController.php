@@ -63,4 +63,21 @@ class RiderController extends Controller
 
         return response()->json(['message' => 'Rider deleted']);
     }
+
+    public function show(Request $request)
+{
+    /** @var \App\Models\Rider $rider */
+    $rider = $request->user();  
+
+    // Just return the fields you care about:
+    return response()->json([
+        'id'       => $rider->id,
+        'owner_id' => $rider->owner_id,
+        'name'     => $rider->name,
+        'email'    => $rider->email,
+        'phone'    => $rider->phone,
+        'role'     => $rider->role,
+    ], 200);
+}
+
 }
