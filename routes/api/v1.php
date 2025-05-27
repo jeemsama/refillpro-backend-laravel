@@ -14,6 +14,20 @@ use App\Http\Controllers\OwnerProfileController;
 
 
 Route::prefix('v1')->group(function () {
+
+        Route::middleware('auth:sanctum')->group(function () {
+        // Rider routes now live at /api/v1/riders
+        Route::get('/riders',    [RiderController::class, 'index']);
+        Route::post('/riders',   [RiderController::class, 'store']);
+        Route::put('/riders/{id}',    [RiderController::class, 'update']);
+        Route::delete('/riders/{id}', [RiderController::class, 'destroy']);
+
+        // … your orders/accept, orders/decline, etc. …
+    });
+
+    
+
+
     Route::post('/register-owner', [RefillingStationOwnerController::class, 'store']);
 
     Route::get('/refill-stations', [RefillingStationOwnerController::class, 'approvedStations']);
@@ -47,6 +61,13 @@ Route::prefix('v1')->group(function () {
         // Owner actions on customer orders:
         Route::post('/orders/{id}/accept',  [OrderController::class, 'accept']);
         Route::post('/orders/{id}/decline', [OrderController::class, 'decline']);
+
+        
+        // Rider’s own assigned orders
+       Route::get('/rider/orders', [OrderController::class, 'getOrdersByRider']);
+
+       Route::post('/orders/{id}/complete', [OrderController::class, 'complete']);
+
     });
 
     
@@ -56,10 +77,10 @@ Route::post('/login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
     // Rider routes
-    Route::get('/riders', [RiderController::class, 'index']);
-    Route::post('/riders', [RiderController::class, 'store']);
-    Route::put('/riders/{id}', [RiderController::class, 'update']);
-    Route::delete('/riders/{id}', [RiderController::class, 'destroy']);
+    // Route::get('/riders', [RiderController::class, 'index']);
+    // Route::post('/riders', [RiderController::class, 'store']);
+    // Route::put('/riders/{id}', [RiderController::class, 'update']);
+    // Route::delete('/riders/{id}', [RiderController::class, 'destroy']);
     
     // Shop details routes - standard REST endpoints
     Route::get('/shop-details', [ShopDetailsController::class, 'index']);
@@ -116,5 +137,6 @@ Route::middleware('auth:sanctum')->post(
 Route::get('/test-v1', function () {
     return response()->json(['ok' => true]);
 });
+
 
 

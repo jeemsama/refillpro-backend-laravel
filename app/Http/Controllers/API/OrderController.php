@@ -15,7 +15,6 @@ public function store(Request $request)
 {
     $data = $request->validate([
         'customer_id'     => 'required|exists:customers,id',
-        // 'shop_name'       => 'required|string',
         'shop_id'         => 'required|exists:owner_shop_details,id',
         'ordered_by'      => 'required|string',
         'phone'           => 'required|string',
@@ -26,11 +25,12 @@ public function store(Request $request)
         'borrow'          => 'required|boolean',
         'swap'            => 'required|boolean',
         'total'           => 'required|numeric',
+        'latitude'        => 'required|numeric',
+        'longitude'       => 'required|numeric',
     ]);
 
     $order = Order::create([
         'customer_id'     => $data['customer_id'],
-        // 'shop_name'       => $data['shop_name'],
         'shop_id'         => $data['shop_id'],
         'ordered_by'      => $data['ordered_by'],
         'phone'           => $data['phone'],
@@ -42,6 +42,8 @@ public function store(Request $request)
         'swap'            => $data['swap'],
         'total'           => $data['total'],
         'status'          => 'pending',
+        'latitude'        => $data['latitude'],   // ← save it
+        'longitude'       => $data['longitude'],  // ← save it
     ]);
 
     return response()->json(['data' => $order], 201);
@@ -62,6 +64,46 @@ public function store(Request $request)
 
         return response()->json(['data' => $orders], 200);
     }
+
+
+
+    /**
+     * Return all orders assigned to the currently authenticated rider.
+     */
+public function getOrdersByRider(Request $request)
+{
+  $riderId = $request->user()->id;
+  $orders = Order::with('shopDetails')
+    ->where('assigned_rider_id', $riderId)
+    ->orderByDesc('created_at')
+    ->get()
+    ->map(fn($o) => $this->formatOrderPayload($o));
+
+  return response()->json(['data' => $orders], 200);
+}
+
+/**
+ * Rider marks an order as completed.
+ */
+public function complete(Request $request, $id)
+{
+    $order = Order::findOrFail($id);
+
+    // only allow the assigned rider to mark it complete:
+    if ($order->assigned_rider_id !== $request->user()->id) {
+        abort(403, 'Not your order');
+    }
+
+    $order->update(['status' => 'completed']);
+
+    return response()->json([
+      'data' => $this->formatOrderPayload($order->refresh())
+    ], 200);
+}
+
+
+
+
 
     /**
      * All orders for a given customer (public).
@@ -114,20 +156,26 @@ public function store(Request $request)
     /**
      * Owner approves and assigns a rider.
      */
-    public function accept(Request $request, $id)
-    {
-        $data = $request->validate([
-            'rider_id' => 'required|exists:riders,id',
-        ]);
+public function accept(Request $request, $id)
+{
+    $data = $request->validate([
+      'assigned_rider_id' => 'required|exists:riders,id',
+    ]);
 
-        $order = Order::findOrFail($id);
-        $order->update([
-            'status'   => 'accepted',
-            'rider_id' => $data['rider_id'],
-        ]);
+    $order = Order::findOrFail($id);
+    $order->update([
+      'status'            => 'accepted',
+      'assigned_rider_id' => $data['assigned_rider_id'],  // ← match your validation key
+    ]);
 
-        return response()->json(['data' => $this->formatOrderPayload($order->refresh())], 200);
-    }
+    return response()->json([
+      'data' => $this->formatOrderPayload($order->refresh())
+    ], 200);
+}
+
+
+
+
 
     /**
      * Owner declines an order.
@@ -156,7 +204,6 @@ public function store(Request $request)
             'id'               => $order->id,
             'shop_id'          => $order->shop_id,
             'customer_id'      => $order->customer_id,
-            // 'shop_name'        => $order->shopDetails->shop_name,
             'owner_name'       => $order->shopDetails->owner_name,
             'ordered_by'       => $order->ordered_by,
             'phone'            => $order->phone,
@@ -171,7 +218,10 @@ public function store(Request $request)
             'status'           => $order->status,
             'cancel_reason'    => $order->cancel_reason,
             'decline_reason'   => $order->decline_reason,
-            'rider_id'         => $order->rider_id,
+            'assigned_rider_id'         => $order->assigned_rider_id,
+            'latitude'         => $order->latitude,
+            'longitude'        => $order->longitude,
+
         ];
     }
 

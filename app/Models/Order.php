@@ -15,6 +15,7 @@ class Order extends Model
       'ordered_by','phone',
       'regular_count','dispenser_count','borrow','swap','total',
       'status','cancel_reason_customer','cancel_reason_owner','assigned_rider_id',
+      'latitude', 'longitude',
     ];
 
         // cast booleans & decimals
@@ -35,23 +36,8 @@ class Order extends Model
       return $this->belongsTo(Customer::class);
     }
 
-        public function rider()
+      public function rider()
     {
       return $this->belongsTo(Rider::class, 'assigned_rider_id');
     }
-
-
-
-
-        /*** (optional) Relationships ***/
-
-    // public function user()
-    // {
-    //     return $this->belongsTo(User::class);
-    // }
-
-    // public function shop()
-    // {
-    //     return $this->belongsTo(OwnerShopDetails::class, 'shop_id');
-    // }
 }
