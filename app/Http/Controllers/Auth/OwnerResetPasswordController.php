@@ -47,10 +47,17 @@ class OwnerResetPasswordController extends Controller
         );
 
         if ($status === Password::PASSWORD_RESET) {
-            return redirect($this->redirectTo)
-                   ->with('status', __($status));
+            // Instead of redirecting away, redirect back so our Blade can show the status
+            return $this->sendResetResponse($request, $status);
         }
 
         return back()->withErrors(['email' => [__($status)]]);
+    }
+
+    protected function sendResetResponse(Request $request, $status)
+    {
+        return redirect()
+            ->back()
+            ->with('status', __($status));
     }
 }

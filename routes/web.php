@@ -69,8 +69,10 @@ Route::prefix('owner')->group(function() {
     Route::get('password/reset',   [OwnerForgotPasswordController::class, 'showLinkRequestForm']);
     Route::post('password/email',  [OwnerForgotPasswordController::class, 'sendResetLinkEmail']);
     Route::get('password/reset/{token}', [OwnerResetPasswordController::class, 'showResetForm']);
+    
 Route::post('password/reset', [OwnerResetPasswordController::class, 'reset'])
          ->name('owner.password.update');});
+        
 
 
 require __DIR__.'/auth.php';
