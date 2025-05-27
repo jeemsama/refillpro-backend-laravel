@@ -100,6 +100,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::patch('/owner/profile', [OwnerProfileController::class, 'update']);
 });
 
+//Owner Profile photo
+Route::middleware('auth:sanctum')->post(
+  'owner/profile/photo',
+  [OwnerProfileController::class, 'updatePhoto']
+);
+
+
 //Riders Profile
 // Route::middleware('auth:sanctum')->get(
 //     '/rider/profile',
