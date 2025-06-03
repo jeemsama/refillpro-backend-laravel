@@ -11,6 +11,8 @@ use App\Http\Controllers\Auth\ResetPasswordController;
 use App\Http\Controllers\OwnerProfileController;
 // use App\Http\Controllers\API\RiderProfileController;
 
+use App\Http\Controllers\StatsController;
+
 
 
 Route::prefix('v1')->group(function () {
@@ -97,6 +99,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // rider’s own profile
     Route::get('/rider/profile', [RiderController::class,'show']);
+
+
 });
 
 
@@ -119,6 +123,9 @@ Route::post('password/reset',  [ResetPasswordController::class, 'reset']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/owner/profile',   [OwnerProfileController::class, 'show']);
     Route::patch('/owner/profile', [OwnerProfileController::class, 'update']);
+
+    // GET /api/owner/stats?year=2025
+    Route::get('owner/stats', [StatsController::class, 'monthlyStats']);
 });
 
 //Owner Profile photo

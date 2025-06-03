@@ -19,6 +19,7 @@ class OwnerShopDetails extends Model
         'regular_gallon_price',
         'has_dispenser_gallon',
         'dispenser_gallon_price',
+        'borrow_price',
         'total_orders',
         'pending_orders',
         'rider_count',

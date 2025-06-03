@@ -40,6 +40,7 @@ class ShopDetailsController extends Controller
             'regular_gallon_price' => 'nullable|numeric|min:0',
             'has_dispenser_gallon' => 'boolean',
             'dispenser_gallon_price' => 'nullable|numeric|min:0',
+            'borrow_price' => 'required|numeric|min:0',
         ]);
 
         if ($validator->fails()) {
@@ -175,6 +176,7 @@ class ShopDetailsController extends Controller
             'regular_gallon_price' => 'nullable|numeric|min:0',
             'has_dispenser_gallon' => 'boolean',
             'dispenser_gallon_price' => 'nullable|numeric|min:0',
+            'borrow_price' => 'required|numeric|min:0',
             'rider_count' => 'nullable|integer|min:0',
         ]);
 
@@ -229,6 +231,7 @@ class ShopDetailsController extends Controller
             'regular_gallon_price' => 'nullable|numeric|min:0',
             'has_dispenser_gallon' => 'boolean',
             'dispenser_gallon_price' => 'nullable|numeric|min:0',
+            'borrow_price' => 'required|numeric|min:0',
             'rider_count' => 'nullable|integer|min:0',
         ]);
 
