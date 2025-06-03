@@ -31,6 +31,9 @@ Route::prefix('v1')->group(function () {
     Route::post('/register-owner', [RefillingStationOwnerController::class, 'store']);
 
     Route::get('/refill-stations', [RefillingStationOwnerController::class, 'approvedStations']);
+
+    // Route::get('/customer/stores', [RefillingStationOwnerController::class, 'index']);
+
     
     // Shop details utility routes (no auth required)
     Route::get('/shop-details/delivery-options', [ShopDetailsController::class, 'getDeliveryTimeOptions']);
@@ -126,6 +129,13 @@ Route::middleware('auth:sanctum')->post(
   'owner/profile/photo',
   [OwnerProfileController::class, 'updatePhoto']
 );
+
+//Stores
+Route::middleware('auth:sanctum')->group(function () {
+    // ...
+    Route::get('/customer/stores', [RefillingStationOwnerController::class, 'index']);
+    // ...
+});
 
 
 //Riders Profile

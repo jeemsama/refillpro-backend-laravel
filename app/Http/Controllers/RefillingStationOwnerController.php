@@ -119,6 +119,26 @@ class RefillingStationOwnerController extends Controller
         return response()->json($stations);
     }
 
+    public function index(Request $request)
+    {
+        // Fetch only those owners whose status is “approved”
+        $stations = RefillingStationOwner::where('status', 'approved')
+            ->get()
+            ->map(function (RefillingStationOwner $station) {
+                return [
+                    'id'         => $station->id,
+                    'name'       => $station->shop_name,
+                    'latitude'   => (float) $station->latitude,
+                    'longitude'  => (float) $station->longitude,
+                    'address'    => $station->address,
+                    // Optional: add any other fields you need for the client,
+                    // e.g. shop_photo URL, owner name, phone, etc.
+                ];
+            });
+
+        return response()->json($stations);
+    }
+
 
 
 }
