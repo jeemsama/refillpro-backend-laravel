@@ -11,20 +11,23 @@ return new class extends Migration
      */
     public function up(): void
     {
+        if (Schema::hasTable('orders')) {
     Schema::table('orders', function (Blueprint $table) {
         $table->decimal('latitude', 10, 7)->nullable();
         $table->decimal('longitude', 10, 7)->nullable();
     });
+}
+
     }
 
     /**
      * Reverse the migrations.
      */
-    public function down(): void
-    {
+   public function down(): void
+{
     Schema::table('orders', function (Blueprint $table) {
-        $table->decimal('latitude', 10, 7)->nullable();
-        $table->decimal('longitude', 10, 7)->nullable();
+        $table->dropColumn(['latitude', 'longitude']);
     });
-    }
+}
+
 };

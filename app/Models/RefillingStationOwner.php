@@ -44,6 +44,8 @@ class RefillingStationOwner extends Authenticatable
         'has_regular_gallon' => 'boolean',
         'has_dispenser_gallon' => 'boolean',
         'has_small_gallon' => 'boolean',
+        'latitude'  => 'float',
+        'longitude' => 'float',
     ];
     protected $hidden = [
         'password',
