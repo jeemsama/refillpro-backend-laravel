@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration {
     public function up(): void {
+        if (! Schema::hasTable('orders')) {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
 
@@ -21,6 +22,8 @@ return new class extends Migration {
 
             $table->timestamps();
         });
+
+        }
     }
 
     public function down(): void {

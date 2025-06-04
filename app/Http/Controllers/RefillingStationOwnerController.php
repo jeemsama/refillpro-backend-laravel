@@ -22,7 +22,7 @@ class RefillingStationOwnerController extends Controller
         
         $validated = $request->validate([
             'name' => 'required',
-            'phone' => 'required',
+            'phone' => 'required|digits:11|unique:refilling_station_owners,phone',
             'email' => 'required|email|unique:refilling_station_owners,email',
             'password' => 'required|min:6',
             'dti_permit_path' => 'nullable|file',
