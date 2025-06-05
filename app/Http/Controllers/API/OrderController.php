@@ -147,7 +147,7 @@ public function complete(Request $request, $id)
         $order = Order::findOrFail($id);
         $order->update([
             'status'        => 'cancelled',
-            'cancel_reason' => $data['reason'],
+            'cancel_reason_customer' => $data['reason'],
         ]);
 
         return response()->json(['data' => $this->formatOrderPayload($order->refresh())], 200);
@@ -189,7 +189,7 @@ public function accept(Request $request, $id)
         $order = Order::findOrFail($id);
         $order->update([
             'status'         => 'declined',
-            'decline_reason' => $data['reason'],
+            'cancel_reason_owner' => $data['reason'],
         ]);
 
         return response()->json(['data' => $this->formatOrderPayload($order->refresh())], 200);
@@ -205,6 +205,7 @@ public function accept(Request $request, $id)
             'shop_id'          => $order->shop_id,
             'customer_id'      => $order->customer_id,
             'owner_name'       => $order->shopDetails->owner_name,
+            'shop_name'        => $order->shopDetails->owner->shop_name,
             'ordered_by'       => $order->ordered_by,
             'phone'            => $order->phone,
             'time_slot'        => $order->time_slot,
@@ -216,8 +217,8 @@ public function accept(Request $request, $id)
             'total'            => $order->total,
             'created_at'       => $order->created_at->toDateTimeString(),
             'status'           => $order->status,
-            'cancel_reason'    => $order->cancel_reason,
-            'decline_reason'   => $order->decline_reason,
+            'cancel_reason_customer' => $order->cancel_reason_customer,
+            'cancel_reason_owner'    => $order->cancel_reason_owner,
             'assigned_rider_id'         => $order->assigned_rider_id,
             'latitude'         => $order->latitude,
             'longitude'        => $order->longitude,
